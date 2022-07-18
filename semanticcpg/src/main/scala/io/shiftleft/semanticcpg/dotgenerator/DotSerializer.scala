@@ -62,7 +62,7 @@ object DotSerializer {
   private def stringRepr(vertex: StoredNode): String = {
     val maybeLineNo: Optional[AnyRef] = vertex.propertyOption(PropertyNames.LINE_NUMBER)
     escape(vertex match {
-      case call: Call                            => (call.name, call.code).toString
+      case call: Call                            => ("CALL", call.name, call.code).toString
       case expr: Expression                      => (expr.label, expr.code, toCfgNode(expr).code).toString
       case method: Method                        => (method.label, method.name).toString
       case ret: MethodReturn                     => (ret.label, ret.typeFullName).toString
