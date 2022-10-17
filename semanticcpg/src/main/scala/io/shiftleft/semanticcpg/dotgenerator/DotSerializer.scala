@@ -60,7 +60,7 @@ object DotSerializer {
 
   private def stringRepr(vertex: StoredNode): String = {
     val maybeLineNo: Optional[AnyRef] = vertex.propertyOption(PropertyNames.LINE_NUMBER)
-    escape(vertex match {
+    vertex match {
       case call: Call                            => s"<LABEL>CALL</LABEL><CODE>${call.name}</CODE><ADDITIONAL>${call.code}</ADDITIONAL>"
       case expr: Expression                      => s"<LABEL>${expr.label}</LABEL><CODE>${expr.code}</CODE><ADDITIONAL>${toCfgNode(expr).code}</ADDITIONAL>"
       case method: Method                        => s"<LABEL>${method.label}</LABEL><CODE>${method.name}</CODE>"
@@ -73,7 +73,7 @@ object DotSerializer {
       case annoParam: AnnotationParameter        => s"<LABEL>${annoParam.label}</LABEL><CODE>${annoParam.code}</CODE>"
       case typ: Type                             => s"<LABEL>${typ.label}</LABEL><CODE>${typ.name}</CODE>"
       case _                                     => ""
-    }) + (if (maybeLineNo.isPresent) s"<SUB>${maybeLineNo.get()}</SUB>" else "")
+    } + (if (maybeLineNo.isPresent) s"<SUB>${maybeLineNo.get()}</SUB>" else "")
   }
 
   private def toCfgNode(node: StoredNode): CfgNode = {
