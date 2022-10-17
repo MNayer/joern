@@ -125,7 +125,7 @@ object DotSerializer {
     case '>' => "&gt;"
     case '&' => "&amp;"
     case _ =>
-      if (ch.isControl) "\\0" + Integer.toOctalString(ch.toInt)
+      if (ch.isControl) "ESC_0" + Integer.toOctalString(ch.toInt)
       else String.valueOf(ch)
   }
 
