@@ -47,8 +47,7 @@ object DotSerializer {
   private def namedGraphBegin(root: AstNode): StringBuilder = {
     val sb = new StringBuilder
     val name = escape(root match {
-      case method: Method => method.name
-      case _              => ""
+      case method: Method => method.name case _              => ""
     })
     sb.append(s"""digraph "$name" {  \n""")
   }
@@ -62,17 +61,17 @@ object DotSerializer {
   private def stringRepr(vertex: StoredNode): String = {
     val maybeLineNo: Optional[AnyRef] = vertex.propertyOption(PropertyNames.LINE_NUMBER)
     escape(vertex match {
-      case call: Call                            => ("CALL", call.name, call.code).toString
-      case expr: Expression                      => (expr.label, expr.code, toCfgNode(expr).code).toString
-      case method: Method                        => (method.label, method.name).toString
-      case ret: MethodReturn                     => (ret.label, ret.typeFullName).toString
-      case param: MethodParameterIn              => ("PARAM", param.code).toString
-      case local: Local                          => (local.label, s"${local.code}: ${local.typeFullName}").toString
-      case target: JumpTarget                    => (target.label, target.name).toString
-      case modifier: Modifier                    => (modifier.label, modifier.modifierType).toString()
-      case annoAssign: AnnotationParameterAssign => (annoAssign.label, annoAssign.code).toString()
-      case annoParam: AnnotationParameter        => (annoParam.label, annoParam.code).toString()
-      case typ: Type                             => (typ.label, typ.name).toString()
+      case call: Call                            => s"<LABEL>CALL</LABEL><CODE>${call.name}</CODE><ADDITIONAL>${call.code}</ADDITIONAL>"
+      case expr: Expression                      => s"<LABEL>${expr.label}</LABEL><CODE>${expr.code}</CODE><ADDITIONAL>${toCfgNode(expr).code}</ADDITIONAL>"
+      case method: Method                        => s"<LABEL>${method.label}</LABEL><CODE>${method.name}</CODE>"
+      case ret: MethodReturn                     => s"<LABEL>${ret.label}</LABEL><CODE>${ret.typeFullName}</CODE>"
+      case param: MethodParameterIn              => s"<LABEL>PARAM</LABEL><CODE>${param.code}</CODE>"
+      case local: Local                          => s"<LABEL>${local.label}</LABEL><CODE>${local.code} ${local.typeFullName}</CODE>"
+      case target: JumpTarget                    => s"<LABEL>${target.label}</LABEL><CODE>${target.name}</CODE>"
+      case modifier: Modifier                    => s"<LABEL>${modifier.label}</LABEL><CODE>${modifier.modifierType}</CODE>"
+      case annoAssign: AnnotationParameterAssign => s"<LABEL>${annoAssign.label}</LABEL><CODE>${annoAssign.code}</CODE>"
+      case annoParam: AnnotationParameter        => s"<LABEL>${annoParam.label}</LABEL><CODE>${annoParam.code}</CODE>"
+      case typ: Type                             => s"<LABEL>${typ.label}</LABEL><CODE>${typ.name}</CODE>"
       case _                                     => ""
     }) + (if (maybeLineNo.isPresent) s"<SUB>${maybeLineNo.get()}</SUB>" else "")
   }
